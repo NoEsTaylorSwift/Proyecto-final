@@ -1,0 +1,1 @@
+Si quieres usar la opción de música, coloca un archivo MP3 en esta carpeta y nómbralo exactamente: cancion.mp3

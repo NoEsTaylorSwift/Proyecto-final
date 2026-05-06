@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agente de Reconocimiento Facial Web</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="contenedor">
+    <section class="panel">
+      <p class="etiqueta">Proyecto web</p>
+      <h1>Agente de Reconocimiento Facial</h1>
+      <p class="descripcion">
+        Activa la cámara, detecta un rostro y ejecuta una acción automática:
+        mostrar mensaje, abrir un sitio web o reproducir una canción.
+      </p>
+
+      <div class="controles">
+        <label for="accion">Acción al detectar rostro</label>
+        <select id="accion">
+          <option value="mensaje">Mostrar mensaje</option>
+          <option value="web">Abrir sitio web</option>
+          <option value="musica">Reproducir canción</option>
+        </select>
+
+        <label for="url">Sitio web</label>
+        <input id="url" type="url" value="https://www.youtube.com" />
+
+        <div class="botones">
+          <button id="btnIniciar">Iniciar agente</button>
+          <button id="btnDetener" class="secundario" disabled>Detener</button>
+        </div>
+
+        <p id="estado" class="estado">Presiona “Iniciar agente” para comenzar.</p>
+      </div>
+    </section>
+
+    <section class="camara">
+      <div class="video-wrap">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="canvas"></canvas>
+      </div>
+
+      <div id="mensajeDetectado" class="mensaje-oculto">
+        Rostro detectado correctamente
+      </div>
+
+      <audio id="audio" src="cancion.mp3" preload="auto"></audio>
+    </section>
+  </main>
+
+  <!-- Librerías para detección facial en el navegador -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
