@@ -50,7 +50,10 @@ modoPersona.addEventListener("click", () => abrirModo("persona"));
 modoMariela.addEventListener("click", () => abrirModo("mariela"));
 btnVolver.addEventListener("click", volverMenu);
 
-btnIniciar.addEventListener("click", iniciarCamara);
+btnIniciar.addEventListener("click", async () => {
+  await prepararAudio();
+  iniciarCamara();
+});
 btnRegistrar.addEventListener("click", registrarPersona);
 btnBuscar.addEventListener("click", iniciarBusqueda);
 btnDetener.addEventListener("click", detenerTodo);
@@ -473,4 +476,15 @@ function esperar(ms) {
 function detenerCancion() {
   audio.pause();
   audio.currentTime = 0;
+}
+async function prepararAudio() {
+  try {
+    audio.volume = 1;
+    await audio.play();
+    audio.pause();
+    audio.currentTime = 0;
+    console.log("Audio preparado correctamente.");
+  } catch (error) {
+    console.log("Audio preparado parcialmente o bloqueado:", error);
+  }
 }
