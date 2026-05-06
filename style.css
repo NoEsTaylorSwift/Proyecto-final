@@ -5,24 +5,24 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #f6e9ff, #e9f3ff);
+  background: linear-gradient(135deg, #f8edff, #e8f4ff);
   color: #21172c;
   min-height: 100vh;
 }
 
 .contenedor {
-  width: min(1100px, 94%);
+  width: min(1160px, 94%);
   margin: 0 auto;
-  padding: 32px 0;
+  padding: 30px 0;
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr 1.15fr;
   gap: 24px;
   align-items: center;
 }
 
 .panel,
 .camara {
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 18px 45px rgba(80, 48, 120, 0.15);
@@ -39,7 +39,7 @@ body {
 }
 
 h1 {
-  font-size: clamp(28px, 4vw, 46px);
+  font-size: clamp(28px, 4vw, 44px);
   margin: 0 0 14px;
   line-height: 1.05;
 }
@@ -49,15 +49,29 @@ h1 {
   color: #4b3b5c;
 }
 
+.aviso {
+  background: #fff8dc;
+  border: 1px solid #ead789;
+  color: #5c4b12;
+  border-radius: 16px;
+  padding: 12px;
+  line-height: 1.45;
+  margin-top: 16px;
+}
+
 .controles {
   display: grid;
   gap: 10px;
-  margin-top: 22px;
+  margin-top: 18px;
 }
 
 label {
   font-weight: bold;
   margin-top: 8px;
+}
+
+small {
+  color: #5d4b70;
 }
 
 select,
@@ -70,6 +84,10 @@ input {
   outline: none;
 }
 
+input[type="range"] {
+  padding: 0;
+}
+
 select:focus,
 input:focus {
   border-color: #6c39ff;
@@ -77,7 +95,7 @@ input:focus {
 
 .botones {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
   margin-top: 12px;
 }
@@ -85,8 +103,8 @@ input:focus {
 button {
   border: 0;
   border-radius: 16px;
-  padding: 13px 18px;
-  font-size: 16px;
+  padding: 13px 16px;
+  font-size: 15px;
   cursor: pointer;
   background: #6c39ff;
   color: white;
@@ -105,6 +123,14 @@ button:disabled {
 button.secundario {
   background: #eee8f7;
   color: #3a2850;
+}
+
+button.especial {
+  background: #078d4d;
+}
+
+button.peligro {
+  background: #cf3150;
 }
 
 .estado {
@@ -134,8 +160,8 @@ canvas {
   object-fit: cover;
 }
 
-video,
-canvas {
+video.mirror,
+canvas.mirror {
   transform: scaleX(-1);
 }
 
@@ -155,7 +181,7 @@ canvas {
   display: block;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 900px) {
   .contenedor {
     grid-template-columns: 1fr;
   }

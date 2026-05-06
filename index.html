@@ -3,21 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agente de Reconocimiento Facial Web</title>
+  <title>Agente Facial - Reconocer mi rostro</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="contenedor">
     <section class="panel">
-      <p class="etiqueta">Proyecto web</p>
+      <p class="etiqueta">Proyecto web con cámara</p>
       <h1>Agente de Reconocimiento Facial</h1>
       <p class="descripcion">
-        Activa la cámara, detecta un rostro y ejecuta una acción automática:
-        mostrar mensaje, abrir un sitio web o reproducir una canción.
+        Esta versión registra tu rostro y luego intenta encontrarte entre varias personas.
+        Los demás rostros se muestran como desconocidos.
       </p>
 
+      <div class="aviso">
+        Primero inicia la cámara, luego registra tu rostro con buena luz. Para buscarte entre la multitud,
+        usa la cámara trasera del teléfono.
+      </div>
+
       <div class="controles">
-        <label for="accion">Acción al detectar rostro</label>
+        <label for="camaraTipo">Cámara</label>
+        <select id="camaraTipo">
+          <option value="user">Frontal / selfie</option>
+          <option value="environment">Trasera / para multitud</option>
+        </select>
+
+        <label for="accion">Acción cuando reconozca tu rostro</label>
         <select id="accion">
           <option value="mensaje">Mostrar mensaje</option>
           <option value="web">Abrir sitio web</option>
@@ -27,12 +38,19 @@
         <label for="url">Sitio web</label>
         <input id="url" type="url" value="https://www.youtube.com" />
 
+        <label for="sensibilidad">Sensibilidad</label>
+        <input id="sensibilidad" type="range" min="0.40" max="0.70" value="0.52" step="0.01" />
+        <small>Recomendado: 0.50 a 0.55. Menor = más estricto. Mayor = más flexible.</small>
+
         <div class="botones">
-          <button id="btnIniciar">Iniciar agente</button>
+          <button id="btnIniciar">Iniciar cámara</button>
+          <button id="btnRegistrar" class="especial" disabled>Registrar mi rostro</button>
+          <button id="btnBuscar" disabled>Buscarme</button>
           <button id="btnDetener" class="secundario" disabled>Detener</button>
+          <button id="btnBorrar" class="peligro">Borrar mi registro</button>
         </div>
 
-        <p id="estado" class="estado">Presiona “Iniciar agente” para comenzar.</p>
+        <p id="estado" class="estado">Presiona “Iniciar cámara” para comenzar.</p>
       </div>
     </section>
 
@@ -43,17 +61,14 @@
       </div>
 
       <div id="mensajeDetectado" class="mensaje-oculto">
-        Rostro detectado correctamente
+        ¡Te encontré! Rostro reconocido correctamente.
       </div>
 
       <audio id="audio" src="cancion.mp3" preload="auto"></audio>
     </section>
   </main>
 
-  <!-- Librerías para detección facial en el navegador -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
