@@ -44,6 +44,7 @@ let ultimaAccion = 0;
 let rostroCongelado = false;
 
 const TIEMPO_ESPERA = 10000;
+const INICIO_CANCION = 80; 
 
 modoPersona.addEventListener("click", () => abrirModo("persona"));
 modoMariela.addEventListener("click", () => abrirModo("mariela"));
@@ -399,12 +400,16 @@ function ejecutarAccion() {
     estado.textContent = `¡${nombreBuscado} fue encontrado/a!`;
   }
 
-  if (accion.value === "musica") {
-    estado.textContent = `¡${nombreBuscado} fue encontrado/a! Reproduciendo canción...`;
-    audio.play().catch(() => {
-      estado.textContent = "El navegador bloqueó el audio o falta el archivo cancion.mp3.";
-    });
-  }
+ if (accion.value === "musica") {
+  estado.textContent = `¡${nombreBuscado} fue encontrado/a! Reproduciendo canción desde el minuto 1:20...`;
+
+  audio.pause();
+  audio.currentTime = INICIO_CANCION;
+
+  audio.play().catch(() => {
+    estado.textContent = "El navegador bloqueó el audio o falta el archivo de la canción.";
+  });
+}
 
   if (accion.value === "web") {
     const sitio = url.value.trim();
@@ -434,6 +439,7 @@ function detenerCamara() {
 function detenerTodo() {
   buscando = false;
   rostroCongelado = false;
+  detenerCancion();
   detenerCamara();
 
   if (canvas.width && canvas.height) {
@@ -463,4 +469,8 @@ function limpiarPantalla() {
 
 function esperar(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+function detenerCancion() {
+  audio.pause();
+  audio.currentTime = 0;
 }
