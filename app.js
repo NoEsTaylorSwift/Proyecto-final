@@ -15,11 +15,6 @@ const btnRegistrar = document.getElementById("btnRegistrar");
 const btnBuscar = document.getElementById("btnBuscar");
 const btnDetener = document.getElementById("btnDetener");
 
-const btnRegistrarMariela = document.getElementById("btnRegistrarMariela");
-const btnExportar = document.getElementById("btnExportar");
-const btnBorrarMariela = document.getElementById("btnBorrarMariela");
-const btnCerrarExport = document.getElementById("btnCerrarExport");
-
 const modoActual = document.getElementById("modoActual");
 const tituloModo = document.getElementById("tituloModo");
 const bloqueNombre = document.getElementById("bloqueNombre");
@@ -32,8 +27,8 @@ const sensibilidad = document.getElementById("sensibilidad");
 const estado = document.getElementById("estado");
 const audio = document.getElementById("audio");
 const mensajeDetectado = document.getElementById("mensajeDetectado");
-const herramientasMariela = document.getElementById("herramientasMariela");
 const textoExportado = document.getElementById("textoExportado");
+const btnCerrarExport = document.getElementById("btnCerrarExport");
 
 const MODEL_URL = "https://vladmandic.github.io/face-api/model/";
 const CLAVE_PERSONA = "perfilPersonaActualV2";
@@ -58,10 +53,10 @@ btnRegistrar.addEventListener("click", registrarPersona);
 btnBuscar.addEventListener("click", iniciarBusqueda);
 btnDetener.addEventListener("click", detenerTodo);
 
-btnRegistrarMariela.addEventListener("click", registrarMariela);
-btnExportar.addEventListener("click", exportarPerfilMariela);
-btnBorrarMariela.addEventListener("click", borrarPerfilMarielaLocal);
-btnCerrarExport.addEventListener("click", () => exportBox.classList.add("oculto"));
+if (btnCerrarExport) {
+  btnCerrarExport.addEventListener("click", () => exportBox.classList.add("oculto"));
+}
+
 sensibilidad.addEventListener("input", prepararMatcherActual);
 
 function abrirModo(nuevoModo) {
@@ -75,9 +70,11 @@ function abrirModo(nuevoModo) {
     modoActual.textContent = "Modo: Encontrarme a mí";
     tituloModo.textContent = "Registrar y buscar a cualquier persona";
     bloqueNombre.classList.remove("oculto");
-    herramientasMariela.classList.add("oculto");
+
+    btnRegistrar.classList.remove("oculto");
     btnRegistrar.textContent = "Registrar rostro";
     btnBuscar.textContent = "Buscar persona";
+
     estado.textContent = "Escribe el nombre de la persona, inicia la cámara y registra su rostro.";
   }
 
@@ -85,12 +82,15 @@ function abrirModo(nuevoModo) {
     modoActual.textContent = "Modo: Encontrar a Mariela";
     tituloModo.textContent = "Buscar a Mariela";
     bloqueNombre.classList.add("oculto");
-    herramientasMariela.classList.remove("oculto");
-    btnRegistrar.textContent = "Registrar rostro temporal";
+
+    // En este modo ya no se muestra el botón verde de registro.
+    // Solo queda iniciar cámara y buscar a Mariela.
+    btnRegistrar.classList.add("oculto");
     btnBuscar.textContent = "Buscar a Mariela";
+
     estado.textContent = existePerfilMariela()
       ? "Perfil de Mariela disponible. Inicia la cámara y presiona “Buscar a Mariela”."
-      : "Aún no hay perfil de Mariela. Inicia la cámara y presiona “Registrar Mariela”.";
+      : "No hay perfil fijo de Mariela todavía. Debes pegar el perfil exportado en perfiles.js.";
   }
 }
 
@@ -149,11 +149,15 @@ async function iniciarCamara() {
     btnRegistrar.disabled = false;
     btnBuscar.disabled = false;
     btnDetener.disabled = false;
-    btnRegistrarMariela.disabled = false;
 
     await prepararMatcherActual();
 
-    estado.textContent = "Cámara activa. Ya puedes registrar o buscar.";
+    if (modo === "mariela" && !faceMatcher) {
+      estado.textContent = "Cámara activa, pero falta el perfil fijo de Mariela en perfiles.js.";
+      return;
+    }
+
+    estado.textContent = "Cámara activa. Ya puedes buscar.";
   } catch (error) {
     console.error(error);
     estado.textContent = "No se pudo iniciar la cámara. Revisa permisos o abre el sitio desde GitHub Pages con HTTPS.";
@@ -187,27 +191,6 @@ async function registrarPersona() {
   await prepararMatcherPersona(perfil);
 
   estado.textContent = `${nombre} quedó registrado/a. Ahora presiona “Buscar persona”.`;
-}
-
-async function registrarMariela() {
-  if (modo !== "mariela") {
-    estado.textContent = "Entra primero al modo “Encontrar a Mariela”.";
-    return;
-  }
-
-  const muestras = await tomarMuestras("Mariela");
-
-  if (!muestras) return;
-
-  const perfil = {
-    nombre: "Mariela",
-    muestras
-  };
-
-  localStorage.setItem(CLAVE_MARIELA_LOCAL, JSON.stringify(perfil));
-  await prepararMatcherMariela(perfil);
-
-  estado.textContent = "Mariela quedó registrada en este navegador. Puedes buscarla o exportar su perfil.";
 }
 
 async function tomarMuestras(nombre) {
@@ -306,7 +289,7 @@ async function iniciarBusqueda() {
 
   if (!faceMatcher) {
     estado.textContent = modo === "mariela"
-      ? "No hay perfil de Mariela todavía. Presiona “Registrar Mariela”."
+      ? "No hay perfil fijo de Mariela todavía. Revisa el archivo perfiles.js."
       : "No hay una persona registrada. Escribe un nombre y registra su rostro.";
     return;
   }
@@ -425,33 +408,6 @@ function ejecutarAccion() {
   }
 }
 
-function exportarPerfilMariela() {
-  const perfil = obtenerPerfilMariela();
-
-  if (!perfil) {
-    estado.textContent = "Primero debes registrar a Mariela para poder exportar su perfil.";
-    return;
-  }
-
-  const contenido = `/*
-  Perfil fijo de Mariela.
-  Este archivo fue generado desde la app.
-*/
-
-const PERFIL_MARIELA = ${JSON.stringify(perfil, null, 2)};
-`;
-
-  textoExportado.value = contenido;
-  exportBox.classList.remove("oculto");
-  exportBox.scrollIntoView({ behavior: "smooth" });
-}
-
-function borrarPerfilMarielaLocal() {
-  localStorage.removeItem(CLAVE_MARIELA_LOCAL);
-  faceMatcher = null;
-  estado.textContent = "Perfil local de Mariela borrado. Si existe perfil fijo en perfiles.js, ese seguirá disponible.";
-}
-
 function detenerCamara() {
   if (stream) {
     stream.getTracks().forEach((track) => track.stop());
@@ -475,7 +431,6 @@ function detenerTodo() {
   btnRegistrar.disabled = true;
   btnBuscar.disabled = true;
   btnDetener.disabled = true;
-  btnRegistrarMariela.disabled = true;
 
   if (modo) {
     estado.textContent = "Agente detenido.";
