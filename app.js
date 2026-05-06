@@ -41,6 +41,7 @@ let buscando = false;
 let faceMatcher = null;
 let nombreBuscado = "";
 let ultimaAccion = 0;
+let rostroCongelado = false;
 
 const TIEMPO_ESPERA = 10000;
 
@@ -295,14 +296,17 @@ async function iniciarBusqueda() {
   }
 
   buscando = true;
+  rostroCongelado = false;
   ultimaAccion = 0;
+
+  video.play();
+
   estado.textContent = `Buscando a ${nombreBuscado}. Apunta la cámara hacia las personas.`;
   buscarEnVideo();
-}
+ }
 
 async function buscarEnVideo() {
-  if (!buscando) return;
-
+  if (!buscando || rostroCongelado) return;
   const opciones = new faceapi.TinyFaceDetectorOptions({
     inputSize: 320,
     scoreThreshold: 0.5
@@ -328,11 +332,21 @@ async function buscarEnVideo() {
     }
   });
 
-  if (encontrado) {
-    mensajeDetectado.textContent = `¡${nombreBuscado} encontrado/a correctamente!`;
-    mensajeDetectado.classList.add("mensaje-visible");
-    ejecutarAccion();
-  } else {
+ if (encontrado) {
+  mensajeDetectado.textContent = `¡${nombreBuscado} encontrado/a correctamente!`;
+  mensajeDetectado.classList.add("mensaje-visible");
+
+  estado.textContent = `¡${nombreBuscado} fue encontrado/a! La imagen quedó fija en pantalla.`;
+
+  ejecutarAccion();
+
+  // Congelar la imagen y detener la búsqueda
+  rostroCongelado = true;
+  buscando = false;
+  video.pause();
+
+  return;
+} else {
     mensajeDetectado.classList.remove("mensaje-visible");
     estado.textContent = resultados.length > 0
       ? `Hay rostros en cámara, pero todavía no encuentro a ${nombreBuscado}.`
@@ -419,6 +433,7 @@ function detenerCamara() {
 
 function detenerTodo() {
   buscando = false;
+  rostroCongelado = false;
   detenerCamara();
 
   if (canvas.width && canvas.height) {
