@@ -5,30 +5,27 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(135deg, #f8edff, #e8f4ff);
+  background: linear-gradient(135deg, #fbebff, #e9f5ff);
   color: #21172c;
   min-height: 100vh;
 }
 
 .contenedor {
-  width: min(1160px, 94%);
+  width: min(1180px, 94%);
   margin: 0 auto;
-  padding: 30px 0;
-  display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 24px;
-  align-items: center;
+  padding: 32px 0;
 }
 
-.panel,
-.camara {
+.hero {
   background: rgba(255, 255, 255, 0.92);
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 18px 45px rgba(80, 48, 120, 0.15);
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 18px 45px rgba(80, 48, 120, 0.14);
+  margin-bottom: 22px;
 }
 
-.etiqueta {
+.etiqueta,
+.modo-actual {
   display: inline-block;
   background: #6c39ff;
   color: white;
@@ -39,35 +36,71 @@ body {
 }
 
 h1 {
-  font-size: clamp(28px, 4vw, 44px);
+  font-size: clamp(30px, 5vw, 52px);
   margin: 0 0 14px;
   line-height: 1.05;
 }
 
-.descripcion {
-  line-height: 1.6;
+h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  margin: 0 0 12px;
+}
+
+h3 {
+  margin-bottom: 8px;
+}
+
+.descripcion,
+.tarjeta p,
+.herramientas p,
+.export-box p {
   color: #4b3b5c;
+  line-height: 1.6;
 }
 
-.aviso {
-  background: #fff8dc;
-  border: 1px solid #ead789;
-  color: #5c4b12;
-  border-radius: 16px;
-  padding: 12px;
-  line-height: 1.45;
-  margin-top: 16px;
-}
-
-.controles {
+.menu {
   display: grid;
-  gap: 10px;
-  margin-top: 18px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.tarjeta {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: 0 18px 45px rgba(80, 48, 120, 0.14);
+  border: 2px solid transparent;
+}
+
+.tarjeta.especial {
+  border-color: #8a60ff;
+  background: linear-gradient(145deg, #ffffff, #f4edff);
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.panel,
+.camara,
+.export-box {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 18px 45px rgba(80, 48, 120, 0.14);
+}
+
+.campo {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
 }
 
 label {
   font-weight: bold;
-  margin-top: 8px;
 }
 
 small {
@@ -75,21 +108,29 @@ small {
 }
 
 select,
-input {
+input,
+textarea {
   width: 100%;
   padding: 13px 14px;
   border: 1px solid #d9cdea;
   border-radius: 14px;
   font-size: 16px;
   outline: none;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 input[type="range"] {
   padding: 0;
 }
 
+textarea {
+  min-height: 280px;
+  resize: vertical;
+}
+
 select:focus,
-input:focus {
+input:focus,
+textarea:focus {
   border-color: #6c39ff;
 }
 
@@ -97,7 +138,7 @@ input:focus {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 button {
@@ -120,13 +161,18 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button.secundario {
+button.secundario,
+button.volver {
   background: #eee8f7;
   color: #3a2850;
 }
 
-button.especial {
+button.verde {
   background: #078d4d;
+}
+
+button.morado {
+  background: #7a3cff;
 }
 
 button.peligro {
@@ -136,17 +182,27 @@ button.peligro {
 .estado {
   background: #f5f0ff;
   border: 1px solid #e0d1ff;
-  border-radius: 14px;
-  padding: 12px;
+  border-radius: 16px;
+  padding: 13px;
   color: #382653;
-  line-height: 1.4;
+  line-height: 1.45;
+  margin-top: 18px;
+}
+
+.herramientas {
+  background: #fff8dc;
+  border: 1px solid #ead789;
+  color: #5c4b12;
+  border-radius: 18px;
+  padding: 14px;
+  margin-top: 16px;
 }
 
 .video-wrap {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  border-radius: 20px;
+  border-radius: 22px;
   overflow: hidden;
   background: #111;
 }
@@ -181,13 +237,25 @@ canvas.mirror {
   display: block;
 }
 
+.export-box {
+  margin-top: 22px;
+}
+
+.oculto {
+  display: none;
+}
+
 @media (max-width: 900px) {
-  .contenedor {
+  .menu,
+  .app {
     grid-template-columns: 1fr;
   }
 
+  .hero,
   .panel,
-  .camara {
+  .camara,
+  .tarjeta,
+  .export-box {
     padding: 20px;
   }
 }

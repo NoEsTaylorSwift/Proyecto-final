@@ -3,71 +3,130 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agente Facial - Reconocer mi rostro</title>
+  <title>Agente Facial Web</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="contenedor">
-    <section class="panel">
-      <p class="etiqueta">Proyecto web con cámara</p>
+    <section class="hero">
+      <p class="etiqueta">Proyecto web con reconocimiento facial</p>
       <h1>Agente de Reconocimiento Facial</h1>
       <p class="descripcion">
-        Esta versión registra tu rostro y luego intenta encontrarte entre varias personas.
-        Los demás rostros se muestran como desconocidos.
+        Elige un modo de trabajo. Puedes registrar a cualquier persona con su nombre
+        o buscar directamente a Mariela usando un perfil guardado.
       </p>
+    </section>
 
-      <div class="aviso">
-        Primero inicia la cámara, luego registra tu rostro con buena luz. Para buscarte entre la multitud,
-        usa la cámara trasera del teléfono.
-      </div>
+    <section id="menu" class="menu">
+      <article class="tarjeta">
+        <h2>Encontrarme a mí</h2>
+        <p>
+          Para que cualquier persona pueda usar la app. La persona escribe su nombre,
+          registra su rostro y luego el sistema la busca en cámara.
+        </p>
+        <button id="modoPersona">Usar este modo</button>
+      </article>
 
-      <div class="controles">
-        <label for="camaraTipo">Cámara</label>
-        <select id="camaraTipo">
-          <option value="user">Frontal / selfie</option>
-          <option value="environment">Trasera / para multitud</option>
-        </select>
+      <article class="tarjeta especial">
+        <h2>Encontrar a Mariela</h2>
+        <p>
+          Modo pensado para la presentación. Usa el perfil guardado de Mariela
+          para encontrarla sin registrarla cada vez.
+        </p>
+        <button id="modoMariela">Buscar a Mariela</button>
+      </article>
+    </section>
 
-        <label for="accion">Acción cuando reconozca tu rostro</label>
-        <select id="accion">
-          <option value="mensaje">Mostrar mensaje</option>
-          <option value="web">Abrir sitio web</option>
-          <option value="musica">Reproducir canción</option>
-        </select>
+    <section id="app" class="app oculto">
+      <div class="panel">
+        <button id="btnVolver" class="volver">← Volver al menú</button>
+        <p id="modoActual" class="modo-actual">Modo</p>
+        <h2 id="tituloModo">Reconocimiento facial</h2>
 
-        <label for="url">Sitio web</label>
-        <input id="url" type="url" value="https://www.youtube.com" />
+        <div id="bloqueNombre" class="campo">
+          <label for="nombrePersona">Nombre de la persona</label>
+          <input id="nombrePersona" type="text" placeholder="Ejemplo: Ana, Luis, Mariela" />
+        </div>
 
-        <label for="sensibilidad">Sensibilidad</label>
-        <input id="sensibilidad" type="range" min="0.40" max="0.70" value="0.52" step="0.01" />
-        <small>Recomendado: 0.50 a 0.55. Menor = más estricto. Mayor = más flexible.</small>
+        <div class="campo">
+          <label for="camaraTipo">Cámara</label>
+          <select id="camaraTipo">
+            <option value="user">Frontal / selfie</option>
+            <option value="environment">Trasera / para buscar en grupo</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="accion">Acción cuando encuentre el rostro</label>
+          <select id="accion">
+            <option value="mensaje">Mostrar mensaje</option>
+            <option value="web">Abrir sitio web</option>
+            <option value="musica">Reproducir canción</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="url">Sitio web</label>
+          <input id="url" type="url" value="https://www.youtube.com" />
+        </div>
+
+        <div class="campo">
+          <label for="sensibilidad">Sensibilidad</label>
+          <input id="sensibilidad" type="range" min="0.40" max="0.72" value="0.54" step="0.01" />
+          <small>
+            Recomendado: 0.50 a 0.56. Menor = más estricto. Mayor = más flexible.
+          </small>
+        </div>
 
         <div class="botones">
           <button id="btnIniciar">Iniciar cámara</button>
-          <button id="btnRegistrar" class="especial" disabled>Registrar mi rostro</button>
-          <button id="btnBuscar" disabled>Buscarme</button>
+          <button id="btnRegistrar" class="verde" disabled>Registrar rostro</button>
+          <button id="btnBuscar" disabled>Buscar</button>
           <button id="btnDetener" class="secundario" disabled>Detener</button>
-          <button id="btnBorrar" class="peligro">Borrar mi registro</button>
         </div>
 
-        <p id="estado" class="estado">Presiona “Iniciar cámara” para comenzar.</p>
+        <div id="herramientasMariela" class="herramientas oculto">
+          <h3>Herramientas de Mariela</h3>
+          <p>
+            Registra a Mariela una vez y luego puedes exportar su perfil para dejarlo fijo
+            en el archivo <strong>perfiles.js</strong>.
+          </p>
+          <div class="botones">
+            <button id="btnRegistrarMariela" class="verde" disabled>Registrar Mariela</button>
+            <button id="btnExportar" class="morado">Exportar perfil</button>
+            <button id="btnBorrarMariela" class="peligro">Borrar perfil local</button>
+          </div>
+        </div>
+
+        <p id="estado" class="estado">Selecciona una opción del menú.</p>
+      </div>
+
+      <div class="camara">
+        <div class="video-wrap">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="canvas"></canvas>
+        </div>
+
+        <div id="mensajeDetectado" class="mensaje-oculto">
+          Rostro reconocido correctamente.
+        </div>
+
+        <audio id="audio" src="cancion.mp3" preload="auto"></audio>
       </div>
     </section>
 
-    <section class="camara">
-      <div class="video-wrap">
-        <video id="video" autoplay muted playsinline></video>
-        <canvas id="canvas"></canvas>
-      </div>
-
-      <div id="mensajeDetectado" class="mensaje-oculto">
-        ¡Te encontré! Rostro reconocido correctamente.
-      </div>
-
-      <audio id="audio" src="cancion.mp3" preload="auto"></audio>
+    <section id="exportBox" class="export-box oculto">
+      <h2>Perfil exportado</h2>
+      <p>
+        Copia este contenido, abre el archivo <strong>perfiles.js</strong> en GitHub
+        y reemplaza todo su contenido por este texto.
+      </p>
+      <textarea id="textoExportado" readonly></textarea>
+      <button id="btnCerrarExport">Cerrar</button>
     </section>
   </main>
 
+  <script src="perfiles.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
   <script src="app.js"></script>
 </body>
